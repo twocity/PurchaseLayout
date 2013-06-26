@@ -2,15 +2,18 @@ package com.twocity.purchaselayoutdemo;
 
 import android.app.Activity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.ScrollView;
 import android.widget.TextView;
 
 public class PurchaseActivity extends Activity implements
 		NotifyingScrollView.OnScrollChangedListener {
-
+	private static final String TAG = PurchaseActivity.class.getSimpleName();
 	private TextView mContent;
+	private ImageView mImageView;
 	private View mBuyView;
 
 	@Override
@@ -20,6 +23,12 @@ public class PurchaseActivity extends Activity implements
 		mContent = (TextView) findViewById(R.id.text_content);
 
 		mContent.setText(createContent());
+		mBuyView = findViewById(R.id.layout_buy);
+
+		NotifyingScrollView mScrollView = (NotifyingScrollView) findViewById(R.id.notify_scrollview);
+		mScrollView.setOnScrollChangedListener(this);
+
+		mImageView = (ImageView) findViewById(R.id.image);
 	}
 
 	@Override
@@ -31,13 +40,19 @@ public class PurchaseActivity extends Activity implements
 
 	@Override
 	public void onScrollChanged(ScrollView who, int l, int t, int oldl, int oldt) {
-
+		t = Math.max(t, 0);
+		if (t > mImageView.getHeight()) {
+			mBuyView.offsetTopAndBottom(t - mBuyView.getTop());
+		} else {
+			int offset = mImageView.getBottom() - mBuyView.getTop();
+			mBuyView.offsetTopAndBottom(offset);
+		}
 	}
 
 	private String createContent() {
 		StringBuffer sb = new StringBuffer();
 
-		for (int i = 0; i < 10; ++i) {
+		for (int i = 0; i < 20; ++i) {
 			sb.append(content);
 			sb.append("\n");
 		}
